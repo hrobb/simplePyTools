@@ -1,23 +1,8 @@
 import sys 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayout
-from PyQt6.QtCore import Qt
+from gui.sptUI import FunctionWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout
 
-class FunctionWidget(QWidget):
-	def __init__(self, labelText, parent=None):
-		super().__init__(parent)
-
-		# Init variables
-		self.label = QLabel(labelText)
-		self.button = QPushButton("Launch")
-
-		# Configure layout
-		layout = QVBoxLayout()
-		layout.addWidget(self.label, alignment=Qt.AlignmentFlag.AlignCenter)
-		layout.addWidget(self.button, alignment=Qt.AlignmentFlag.AlignCenter)
-		layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-		
-		# Apply layout
-		self.setLayout(layout)
+scripts = {"RNG": "/scripts/rng.py"}
 
 class MainWindow(QMainWindow):
 	def __init__(self):
@@ -31,12 +16,9 @@ class MainWindow(QMainWindow):
 		# Setup main menu grid
 		gridLayout = QGridLayout()
 
-		rows, cols = 2, 4
-
-		for row in range(rows):
-			for col in range(cols):
-				container = FunctionWidget("Test Function")
-				gridLayout.addWidget(container, row, col)
+		for label, path in scripts.items():
+			container = FunctionWidget(label, path)
+			gridLayout.addWidget(container)
 
 		# Finish setting things up
 		appContainer.setLayout(gridLayout)
