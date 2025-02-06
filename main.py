@@ -1,8 +1,7 @@
 import sys 
+from config.scriptsConfig import SCRIPT_REGISTRY
 from gui.sptUI import FunctionWidget
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout
-
-scripts = {"RNG": "/scripts/rng.py"}
 
 class MainWindow(QMainWindow):
 	def __init__(self):
@@ -16,8 +15,8 @@ class MainWindow(QMainWindow):
 		# Setup main menu grid
 		gridLayout = QGridLayout()
 
-		for label, path in scripts.items():
-			container = FunctionWidget(label, path)
+		for script_id, script_info in SCRIPT_REGISTRY.items():
+			container = FunctionWidget(script_info)
 			gridLayout.addWidget(container)
 
 		# Finish setting things up
