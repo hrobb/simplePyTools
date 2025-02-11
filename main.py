@@ -1,5 +1,5 @@
 import sys 
-from gui.WindowManager import MainWindowManager
+from gui.nav_logic.window_manager import MainWindowManager
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
 class MainWindow(QMainWindow):

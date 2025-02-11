@@ -1,4 +1,3 @@
-import sys
 import random
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QLineEdit
 from PyQt6.QtGui import QIntValidator
@@ -13,6 +12,7 @@ class RNG(QWidget):
         self.setWindowTitle("Random Number Generator")
 
         self.desc = QLabel("Set range for num:")
+        self.desc.setContentsMargins(0, 25, 0, 0)
         self.inpBox = QLineEdit()
         self.inpBox.setValidator(QIntValidator())
         self.inpBox.setPlaceholderText("Max")
@@ -29,7 +29,7 @@ class RNG(QWidget):
         layout.addWidget(self.desc2, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.inpBox2, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.button, alignment=Qt.AlignmentFlag.AlignCenter)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
             
         # Apply layout
         self.setLayout(layout)
