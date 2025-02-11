@@ -1,7 +1,10 @@
 import sys
 import random
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QLineEdit
+from PyQt6.QtGui import QIntValidator
 from PyQt6.QtCore import Qt
+
+# Potential future adds: Rolling results history?
 
 class RNG(QWidget):
     def __init__(self):
@@ -11,34 +14,34 @@ class RNG(QWidget):
 
         self.desc = QLabel("Set range for num:")
         self.inpBox = QLineEdit()
+        self.inpBox.setValidator(QIntValidator())
         self.inpBox.setPlaceholderText("Max")
+        self.desc2 = QLabel("Result:")
+        self.inpBox2 = QLineEdit()
+        self.inpBox2.setReadOnly(True)
+        self.button = QPushButton("Roll")
+        self.button.clicked.connect(self.rollForRNG)
 
         # Configure layout
         layout = QVBoxLayout()
         layout.addWidget(self.desc, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.inpBox, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.desc2, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.inpBox2, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.button, alignment=Qt.AlignmentFlag.AlignCenter)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
         # Apply layout
         self.setLayout(layout)
 
-# while True:
-#     x = input("Out of: ")
-    
-#     if x == '':
-#         print("Exiting...")
-#         break
-    
-#     try:
-#         result = random.randint(1, int(x))
-#         print(result)
-#     except ValueError:
-#         print("Invalid input. Please enter a number.")
 
-
-# Subprocess
-if __name__ == "__main__":
-	subprocess = QApplication(sys.argv)
-	module = RNG()
-	module.show()
-	sys.exit(subprocess.exec())
+    def rollForRNG(self):
+        try:
+            value = self.inpBox.text()
+            if value:
+                result = random.randint(1, int(value))
+                self.inpBox2.setText(str(result))
+            else:
+                self.inpBox2.setText("Enter a number")
+        except ValueError:
+            self.inpBox2.setText("Try again")

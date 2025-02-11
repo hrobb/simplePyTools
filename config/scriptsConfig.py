@@ -15,5 +15,10 @@ SCRIPT_REGISTRY = {
 		title="RNG",
 		description="Generate a random number",
 		path=SCRIPTS_DIR / "rng.py"
+	),
+	"RNGString": ScriptInfo(
+		title="RNG String",
+		description="Generate a random string",
+		path=SCRIPTS_DIR / "rngstring.py"
 	)
 }
