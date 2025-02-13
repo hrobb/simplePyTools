@@ -11,7 +11,7 @@ class RNG(QWidget):
 
         self.setWindowTitle("Random Number Generator")
 
-        self.desc = QLabel("Set range for num:")
+        self.desc = QLabel("Set ceiling:")
         self.desc.setContentsMargins(0, 25, 0, 0)
         self.inpBox = QLineEdit()
         self.inpBox.setValidator(QIntValidator())

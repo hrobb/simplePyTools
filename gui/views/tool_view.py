@@ -34,6 +34,7 @@ class ToolView(QWidget):
 		# Return to menu button
 		menu_button = QPushButton("Main Menu")
 		menu_button.clicked.connect(self.return_to_main.emit)
+		menu_button.setStyleSheet('font: 12pt')
 		menu_button.setMinimumHeight(60)
 		layout.addWidget(menu_button)
 		layout.addSpacing(10)
@@ -42,6 +43,7 @@ class ToolView(QWidget):
 		for script_id, script_info in self.script_registry.items():
 			button = QPushButton(script_info.title)
 			button.clicked.connect(lambda checked, info=script_info: self.switched_tool.emit(info))
+			button.setStyleSheet('font: 10pt')
 			button.setMinimumHeight(50)
 			layout.addWidget(button)
 
