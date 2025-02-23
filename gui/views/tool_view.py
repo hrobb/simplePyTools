@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QStackedWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFrame
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget, QStackedWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFrame, QLabel
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QPixmap
 
 class ToolView(QWidget):
 	switched_tool = pyqtSignal(object)
@@ -47,7 +48,20 @@ class ToolView(QWidget):
 			button.setMinimumHeight(50)
 			layout.addWidget(button)
 
+		# Spacer
 		layout.addStretch()
+		
+		# Logo in bottom corner
+		logo_label = QLabel()
+		logo = QPixmap("assets/spt.png").scaled(
+			150,
+			150, 
+			Qt.AspectRatioMode.KeepAspectRatio,
+			Qt.TransformationMode.SmoothTransformation
+		)
+		logo_label.setPixmap(logo)
+		layout.addWidget(logo_label, alignment=Qt.AlignmentFlag.AlignCenter)
+
 		sidebar.setLayout(layout)
 		sidebar.setFixedWidth(220)
 		return sidebar
