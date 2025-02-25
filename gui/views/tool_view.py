@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QWidget, QStackedWidget, QHBoxLayout, QVBoxLayout, Q
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap
 
+from gui.utils.helpers import get_image_path
+
 class ToolView(QWidget):
 	switched_tool = pyqtSignal(object)
 	return_to_main = pyqtSignal()
@@ -53,7 +55,7 @@ class ToolView(QWidget):
 		
 		# Logo in bottom corner
 		logo_label = QLabel()
-		logo = QPixmap("assets/spt.png").scaled(
+		logo = QPixmap(get_image_path("assets/spt.png")).scaled(
 			150,
 			150, 
 			Qt.AspectRatioMode.KeepAspectRatio,

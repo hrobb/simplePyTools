@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QStackedWidget
-from config.scriptsConfig import SCRIPT_REGISTRY
+from config.scripts_config import SCRIPT_REGISTRY
 from gui.nav_logic.tool_manager import ToolManager
 from gui.views.main_menu import MainMenu
 from gui.views.tool_view import ToolView

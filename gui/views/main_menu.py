@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QLabel, QPushButt
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, pyqtSignal
 
+from gui.utils.helpers import get_image_path
+
 class MainMenu(QWidget):
 	selected_tool = pyqtSignal(object)
 
@@ -26,7 +28,7 @@ class MainMenu(QWidget):
 		layout.setContentsMargins(0, 0, 0, 0)
 
 		logo_label = QLabel()
-		logo = QPixmap("assets/spt.png").scaled(
+		logo = QPixmap(get_image_path("assets/spt.png")).scaled(
 			100,
 			100, 
 			Qt.AspectRatioMode.KeepAspectRatio,
