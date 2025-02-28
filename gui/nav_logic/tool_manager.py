@@ -1,5 +1,6 @@
 from scripts.rng import RNG
 from scripts.rngstring import RNGString
+from scripts.subsetSelector import SubsetSelector
 
 class ToolManager:
 	def __init__(self):
@@ -21,4 +22,6 @@ class ToolManager:
 			return RNG()
 		elif script_info.title == "RNG String":
 			return RNGString()
+		elif script_info.title == "Subset Selector":
+			return SubsetSelector()
 		return None

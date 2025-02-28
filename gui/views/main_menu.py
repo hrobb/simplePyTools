@@ -51,11 +51,15 @@ class MainMenu(QWidget):
 		container = QWidget()
 		layout = QGridLayout(container)
 
-		row, col = 0, 0
+		i, row, col = 0, 0, 0
 
 		for script_id, script_info in self.script_registry.items():
 			layout.addWidget(self._create_function_widget(script_info), row, col)
 			col = col + 1
+			i = i+1
+			if i > len(self.script_registry) % 2:
+				row = row + 1
+				col = 0
 
 		return container
 

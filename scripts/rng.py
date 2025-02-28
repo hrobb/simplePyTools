@@ -1,9 +1,12 @@
 import random
-from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QPushButton, QLabel, QVBoxLayout, QLineEdit, QHBoxLayout, QTextEdit
 from PyQt6.QtGui import QIntValidator
 from PyQt6.QtCore import Qt
 
-# Potential future adds: Rolling results history?
+# Potential future adds: 
+# Add optional floor defaulted to zero 
+# Rolling results history
+
 
 class RNG(QWidget):
     def __init__(self):
@@ -17,19 +20,19 @@ class RNG(QWidget):
         self.ceilingInput.setPlaceholderText("Max")
         self.ceilingInput.setFixedWidth(120)
 
-        self.resultLabel = QLabel("Result:")
-        self.resultOutput = QLineEdit()
-        self.resultOutput.setReadOnly(True)
-        self.resultOutput.setFixedWidth(120)
-
         self.button = QPushButton("Roll")
         self.button.setFixedSize(80, 30)
         self.button.clicked.connect(self.rollForRNG)
 
+        self.resultLabel = QLabel("Result:")
+        self.resultOutput = QTextEdit()
+        self.resultOutput.setReadOnly(True)
+
+
         # Configure layout
         layout = QVBoxLayout()
         row1 = QHBoxLayout()
-        row2 = QHBoxLayout()
+        row2 = QVBoxLayout()
 
         row1.setSpacing(10)
         row2.setSpacing(10)
@@ -39,7 +42,6 @@ class RNG(QWidget):
         row1.addWidget(self.ceilingInput)
         row1.addStretch()
 
-        row2.addStretch()
         row2.addWidget(self.resultLabel)
         row2.addWidget(self.resultOutput)
         row2.addStretch()
@@ -51,9 +53,10 @@ class RNG(QWidget):
         layout.addSpacing(20)
         layout.addLayout(row1)
         layout.addSpacing(10)
-        layout.addLayout(row2)
-        layout.addSpacing(10)
         layout.addWidget(self.button, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addSpacing(10)
+        layout.addLayout(row2)
+        
 
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
             
@@ -62,12 +65,18 @@ class RNG(QWidget):
 
 
     def rollForRNG(self):
+        value = self.ceilingInput.text()
+
+        if not value:
+            self.resultOutput.setText("Enter a max value")
+            return
+        
         try:
-            value = self.ceilingInput.text()
-            if value:
-                result = random.randint(1, int(value))
-                self.resultOutput.setText(str(result))
-            else:
-                self.resultOutput.setText("Enter a number")
+            ceiling = int(value)
+            if ceiling < 1:
+                self.resultOutput.setText("Max value must be at least 1")
+                return
+            result = random.randint(1, int(value))
+            self.resultOutput.setText(str(result))
         except ValueError:
-            self.resultOutput.setText("Try again")
+            self.resultOutput.setText("Invalid input")
