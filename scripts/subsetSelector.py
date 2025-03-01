@@ -77,15 +77,33 @@ class SubsetSelector(QWidget):
         self.setLayout(layout)
 
     def rollForSubset(self):
+        rangeTotal = self.ceilingInput.text()
+        resultNumber = self.amountInput.text()
+        
+        if not rangeTotal or not resultNumber:
+            self.resultOutput.setText("Ensure all fields are populated")
+            return
+        
         try:
-            rangeTotal = self.ceilingInput.text()
-            resultNumber = self.amountInput.text()
+            ceiling = int(rangeTotal)
+            resNumber = int(resultNumber)
 
-            if rangeTotal and resultNumber:
-                resultSet = random.sample(range(1, int(rangeTotal) + 1), int(resultNumber))
-                resultSet.sort()
-                self.resultOutput.setText(str(resultSet))
-            else:
-                self.resultOutput.setText("Ensure inputs have been entered")
+            if ceiling < 1:
+                self.resultOutput.setText("Ceiling must be at least 1")
+                return
+            
+            if resNumber < 1:
+                self.resultOutput.setText("Amount must be at least 1")
+                return
+            
+            if resNumber > ceiling:
+                self.resultOutput.setText("Amount can't be more than ceiling")
+                return
+            
+
+            resultSet = random.sample(range(1, ceiling + 1), resNumber)
+            resultSet.sort()
+            self.resultOutput.setText(str(resultSet))
+
         except ValueError:
-            self.resultOutput.setText("Invalid input. Please enter two numbers. \nAmount to return must be lower than the ceiling.")
+            self.resultOutput.setText("Invalid input")
