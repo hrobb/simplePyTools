@@ -25,5 +25,10 @@ SCRIPT_REGISTRY = {
 		title="Subset Selector",
 		description="Generate a subset of numbers from a given range",
 		path=SCRIPTS_DIR / "subsetSelector.py"
+	),
+	"RNGList": ScriptInfo(
+		title="RNG List Selector",
+		description="Select a random item from a list",
+		path=SCRIPTS_DIR / "rnglist.py"
 	)
 }

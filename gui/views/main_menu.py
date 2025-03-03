@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QLabel, QPushButton, QHBoxLayout
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, pyqtSignal
+from math import floor, sqrt
 
 from gui.utils.helpers import get_image_path
 
@@ -51,14 +52,15 @@ class MainMenu(QWidget):
 		container = QWidget()
 		layout = QGridLayout(container)
 
-		i, row, col = 0, 0, 0
+		# Calculate the nearest square for pivoting the grid
+		row, col = 0, 0
+		sqNum = floor(sqrt(len(self.script_registry)))
 
 		for script_id, script_info in self.script_registry.items():
 			layout.addWidget(self._create_function_widget(script_info), row, col)
-			col = col + 1
-			i = i+1
-			if i > len(self.script_registry) % 2:
-				row = row + 1
+			col += 1
+			if col >= sqNum:
+				row += 1
 				col = 0
 
 		return container
