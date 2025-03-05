@@ -5,26 +5,30 @@ from scripts.rnglist import RNGList
 
 class ToolManager:
 	def __init__(self):
-		# Dictionary for instantiated tools
-		self.tools = {}
+		
+		self.active_tools = {}
+		self.tool_map = {
+			"RNG": RNG,
+			"RNG String": RNGString,
+			"Subset Selector": SubsetSelector,
+			"RNG List Selector": RNGList
+		}
 
+	# Retrieve tool if it's there, if not create it
 	def get_tool(self, script_info):
-		# Retrieve tool if it's there, if not create
-		if script_info.title not in self.tools:
+		
+		if script_info.title not in self.active_tools:
 			tool = self._create_tool(script_info)
 			if tool:
 				tool.setProperty("script_id", script_info.title)
-				self.tools[script_info.title] = tool
-		return self.tools.get(script_info.title)
+				self.active_tools[script_info.title] = tool
+		return self.active_tools.get(script_info.title)
 	
-	# TODO: Once more are added this should all be read from a dictionary
 	def _create_tool(self, script_info):
-		if script_info.title == "RNG":
-			return RNG()
-		elif script_info.title == "RNG String":
-			return RNGString()
-		elif script_info.title == "Subset Selector":
-			return SubsetSelector()
-		elif script_info.title == "RNG List Selector":
-			return RNGList()
+
+		tool_class = self.tool_map.get(script_info.title)
+
+		if tool_class:
+			return tool_class()
+		
 		return None
