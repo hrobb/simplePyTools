@@ -1,3 +1,58 @@
+from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTextEdit, QPushButton
+from PyQt6.QtCore import Qt
+
+# Potential future adds:
+
+class ListRanker(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("List Ranker")
+
+        self.inputList = [
+            "Apple", "Orange", "Grape", "Banana", 
+            "Pineapple", "Mango", "Pomegranate", "Watermelon"
+        ]
+
+        # Input Section
+        input_group = QGroupBox("Input List")
+        input_layout = QVBoxLayout()
+
+        self.instructionsLabel = QLabel("Enter all list items (comma or return delimited):")
+        self.listInput = QTextEdit()
+        self.listInput.setPlaceholderText("Item 1, Item 2, Item 3")
+
+        self.setListButton = QPushButton("Set List")
+        self.setListButton.setFixedSize(200, 30)
+        #self.setListButton.clicked.connect(self.updateList)
+
+        self.currentListLabel = QLabel("Current List:")
+        self.currentListDisplay = QTextEdit()
+        self.currentListDisplay.setReadOnly(True)
+        #self.updateListDisplay()
+
+        input_layout.setSpacing(10)
+        input_layout.addWidget(self.instructionsLabel)
+        input_layout.addWidget(self.listInput)
+        input_layout.addWidget(self.setListButton, alignment=Qt.AlignmentFlag.AlignCenter)
+        input_layout.addWidget(self.currentListLabel)
+        input_layout.addWidget(self.currentListDisplay)
+        input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        input_group.setLayout(input_layout)
+
+        # Ranking and Output Section
+
+        # Parent Layout
+        layout = QVBoxLayout()
+
+        layout.addWidget(input_group)
+
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        # Apply layout
+        self.setLayout(layout)
+
+
 # # Bubble sort for smaller lists
 
 # def bubble_sort(items):

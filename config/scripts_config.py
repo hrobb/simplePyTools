@@ -30,5 +30,10 @@ SCRIPT_REGISTRY = {
 		title="RNG List Selector",
 		description="Select a random item from a list",
 		path=SCRIPTS_DIR / "rnglist.py"
+	),
+	"ListRanker": ScriptInfo(
+		title="List Ranker",
+		description="Algorithmically rank items in a list into an ordered list",
+		path=SCRIPTS_DIR / "ranker.py"
 	)
 }

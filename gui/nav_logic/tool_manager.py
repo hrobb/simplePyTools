@@ -2,6 +2,7 @@ from scripts.rng import RNG
 from scripts.rngstring import RNGString
 from scripts.subsetSelector import SubsetSelector
 from scripts.rnglist import RNGList
+from scripts.ranker import ListRanker
 
 class ToolManager:
 	def __init__(self):
@@ -11,7 +12,8 @@ class ToolManager:
 			"RNG": RNG,
 			"RNG String": RNGString,
 			"Subset Selector": SubsetSelector,
-			"RNG List Selector": RNGList
+			"RNG List Selector": RNGList,
+			"List Ranker": ListRanker
 		}
 
 	# Retrieve tool if it's there, if not create it
