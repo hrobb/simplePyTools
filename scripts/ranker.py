@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTextEdit, QPushButton
+from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTextEdit, QPushButton, QHBoxLayout
 from PyQt6.QtCore import Qt
 
 # Potential future adds:
@@ -26,26 +26,38 @@ class ListRanker(QWidget):
         self.setListButton.setFixedSize(200, 30)
         #self.setListButton.clicked.connect(self.updateList)
 
-        self.currentListLabel = QLabel("Current List:")
-        self.currentListDisplay = QTextEdit()
-        self.currentListDisplay.setReadOnly(True)
-        #self.updateListDisplay()
-
         input_layout.setSpacing(10)
         input_layout.addWidget(self.instructionsLabel)
         input_layout.addWidget(self.listInput)
         input_layout.addWidget(self.setListButton, alignment=Qt.AlignmentFlag.AlignCenter)
-        input_layout.addWidget(self.currentListLabel)
-        input_layout.addWidget(self.currentListDisplay)
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         input_group.setLayout(input_layout)
 
-        # Ranking and Output Section
+        # Output Section
+        output_group = QGroupBox("Ranker and Output")
+        output_layout = QVBoxLayout()
+
+        ranking_section = QWidget()
+        ranking_layout = QHBoxLayout()
+
+        self.optionOneButton = QPushButton("Option 1", ranking_section)
+        self.optionOneButton.setFixedSize(200, 50)
+        self.optionTwoButton = QPushButton("Option 2", ranking_section)
+        self.optionTwoButton.setFixedSize(200, 50)
+        ranking_layout.addWidget(self.optionOneButton)
+        ranking_layout.addWidget(self.optionTwoButton)
+        ranking_section.setLayout(ranking_layout)
+
+        output_layout.setSpacing(10)
+        output_layout.addWidget(ranking_section)
+        output_group.setLayout(output_layout)
 
         # Parent Layout
         layout = QVBoxLayout()
 
         layout.addWidget(input_group)
+        layout.addSpacing(10)
+        layout.addWidget(output_group)
 
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
