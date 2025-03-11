@@ -24,7 +24,7 @@ class ListRanker(QWidget):
 
         self.setListButton = QPushButton("Set List")
         self.setListButton.setFixedSize(200, 30)
-        #self.setListButton.clicked.connect(self.updateList)
+        self.setListButton.clicked.connect(self.updateList)
 
         input_layout.setSpacing(10)
         input_layout.addWidget(self.instructionsLabel)
@@ -39,7 +39,6 @@ class ListRanker(QWidget):
 
         ranking_section = QWidget()
         ranking_layout = QHBoxLayout()
-
         self.optionOneButton = QPushButton("Option 1", ranking_section)
         self.optionOneButton.setFixedSize(200, 50)
         self.optionTwoButton = QPushButton("Option 2", ranking_section)
@@ -48,8 +47,13 @@ class ListRanker(QWidget):
         ranking_layout.addWidget(self.optionTwoButton)
         ranking_section.setLayout(ranking_layout)
 
+        self.outputBox = QTextEdit()
+        self.outputBox.setReadOnly(True)
+
         output_layout.setSpacing(10)
         output_layout.addWidget(ranking_section)
+        output_layout.addWidget(self.outputBox)
+        output_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         output_group.setLayout(output_layout)
 
         # Parent Layout
@@ -63,6 +67,9 @@ class ListRanker(QWidget):
 
         # Apply layout
         self.setLayout(layout)
+
+    def updateList(self):
+        return
 
 
 # # Bubble sort for smaller lists
