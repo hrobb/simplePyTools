@@ -9,7 +9,7 @@ class ListRanker(QWidget):
 
         self.setWindowTitle("List Ranker")
 
-        self.inputList = [
+        self.rankedList = [
             "Apple", "Orange", "Grape", "Banana", 
             "Pineapple", "Mango", "Pomegranate", "Watermelon"
         ]
@@ -69,7 +69,31 @@ class ListRanker(QWidget):
         self.setLayout(layout)
 
     def updateList(self):
-        return
+        listText = self.listInput.toPlainText().strip()
+
+        if not listText:
+            return
+        
+        if "," in listText:
+            items = [item.strip() for item in listText.split()]
+        else:
+            items = [item.strip() for item in listText.splitlines()]
+
+        if items:
+            self.rankedList = items
+            self.updateOutputDisplay()
+            self.listInput.clear()
+
+            # if self.rankedList.count < 6:
+            #     self.rankedList = self.bubble_sort(self.rankedList)
+            # else:
+            #     self.rankedList = self.merge_sort(self.rankedList)
+
+    
+    def updateOutputDisplay(self):
+        self.outputBox.clear()
+        listDisplay = "\n".join(self.rankedList)
+        self.outputBox.setText(listDisplay)
 
 
 # # Bubble sort for smaller lists
