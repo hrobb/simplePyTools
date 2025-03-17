@@ -84,8 +84,9 @@ class ListRanker(QWidget):
             self.updateOutputDisplay()
             self.listInput.clear()
 
-            # if self.rankedList.count < 6:
-            #     self.rankedList = self.bubble_sort(self.rankedList)
+            if len(self.rankedList) < 6:
+                # Positional arg error??
+                self.rankedList = self.bubble_sort(self.rankedList)
             # else:
             #     self.rankedList = self.merge_sort(self.rankedList)
 
@@ -96,23 +97,25 @@ class ListRanker(QWidget):
         self.outputBox.setText(listDisplay)
 
 
-# # Bubble sort for smaller lists
+    # Bubble sort for smaller lists
 
-# def bubble_sort(items):
-#     total = len(items)
-#     rankedList = items[:]
+    def bubble_sort(items):
+        total = len(items)
+        rankedList = items[:]
 
-#     for i in range(total):
-#         for j in range (total - i - 1):
-#             print(f"A: {rankedList[j]} or B: {rankedList[j+1]}")
-#             choice = input(" A OR B: ").strip().upper()
-#             if choice == 'B':
-#                 rankedList[j], rankedList[j+1] = rankedList[j+1], rankedList[j]
-#             elif choice != 'A':
-#                 print ("Invalid")
-#                 return bubble_sort(items)
-            
-#     return rankedList
+        for i in range(total):
+            for j in range (total - i - 1):
+                self.optionOneButton.setText(rankedList[j])
+                self.optionTwoButton.setText(rankedList[j+1])
+                
+                choice = input(" A OR B: ").strip().upper()
+                if choice == 'B':
+                    rankedList[j], rankedList[j+1] = rankedList[j+1], rankedList[j]
+                elif choice != 'A':
+                    print ("Invalid")
+                    return bubble_sort(items)
+                
+        return rankedList
 
 # # Merge or quick sort for larger lists
 
