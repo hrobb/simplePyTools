@@ -9,10 +9,11 @@ class ListRanker(QWidget):
 
         self.setWindowTitle("List Ranker")
 
-        self.rankedList = [
-            "Apple", "Orange", "Grape", "Banana", 
-            "Pineapple", "Mango", "Pomegranate", "Watermelon"
-        ]
+        self.rankedList = ["Option A", "Option B", "Option C", "Option D"]
+
+        self.sorted_index = 1
+        self.compare_index = 0
+        self.current_item = None
 
         # Input Section
         input_group = QGroupBox("Input List")
@@ -40,9 +41,13 @@ class ListRanker(QWidget):
         ranking_section = QWidget()
         ranking_layout = QHBoxLayout()
         self.optionOneButton = QPushButton("Option 1", ranking_section)
+        self.optionOneButton.setEnabled(False)
         self.optionOneButton.setFixedSize(200, 50)
+        self.optionOneButton.clicked.connect(lambda: self.handleChoice(0))
         self.optionTwoButton = QPushButton("Option 2", ranking_section)
+        self.optionTwoButton.setEnabled(False)
         self.optionTwoButton.setFixedSize(200, 50)
+        self.optionTwoButton.clicked.connect(lambda: self.handleChoice(1))
         ranking_layout.addWidget(self.optionOneButton)
         ranking_layout.addWidget(self.optionTwoButton)
         ranking_section.setLayout(ranking_layout)
@@ -68,6 +73,7 @@ class ListRanker(QWidget):
         # Apply layout
         self.setLayout(layout)
 
+    # Parse/accept input, if valid start sorting process
     def updateList(self):
         listText = self.listInput.toPlainText().strip()
 
@@ -75,102 +81,66 @@ class ListRanker(QWidget):
             return
         
         if "," in listText:
-            items = [item.strip() for item in listText.split()]
+            items = [item.strip() for item in listText.split(',')]
         else:
             items = [item.strip() for item in listText.splitlines()]
 
-        if items:
+        if items and len(items) >= 2:
             self.rankedList = items
             self.updateOutputDisplay()
             self.listInput.clear()
 
-            if len(self.rankedList) < 6:
-                # Positional arg error??
-                self.rankedList = self.bubble_sort(self.rankedList)
-            # else:
-            #     self.rankedList = self.merge_sort(self.rankedList)
+            self.sort()
+        else:
+            self.outputBox.setText("Please enter at least two items")
+            return            
 
-    
     def updateOutputDisplay(self):
         self.outputBox.clear()
         listDisplay = "\n".join(self.rankedList)
         self.outputBox.setText(listDisplay)
 
+    # Begin sorting process
+    def sort(self):
+        self.sorted_index = 1
+        self.optionOneButton.setEnabled(True)
+        self.optionTwoButton.setEnabled(True)
+        self.setupNextPass()
 
-    # Bubble sort for smaller lists
+    # Continue to the next element
+    def setupNextPass(self):
+        self.current_item = self.rankedList[self.sorted_index]
+        self.compare_index = self.sorted_index - 1
 
-    def bubble_sort(items):
-        total = len(items)
-        rankedList = items[:]
+        self.setupCompare()
 
-        for i in range(total):
-            for j in range (total - i - 1):
-                self.optionOneButton.setText(rankedList[j])
-                self.optionTwoButton.setText(rankedList[j+1])
-                
-                choice = input(" A OR B: ").strip().upper()
-                if choice == 'B':
-                    rankedList[j], rankedList[j+1] = rankedList[j+1], rankedList[j]
-                elif choice != 'A':
-                    print ("Invalid")
-                    return bubble_sort(items)
-                
-        return rankedList
-
-# # Merge or quick sort for larger lists
-
-# def merge_sort(items):
-
-#     if len(items) <= 1:
-#         return items
-
-#     # Split the list
-#     mid = len(items) // 2
+    def setupCompare(self):
+        self.optionOneButton.setText(self.rankedList[self.compare_index])
+        self.optionTwoButton.setText(self.current_item)
     
-#     # Recursively sort both halves
-#     left = merge_sort(items[:mid])
-#     right = merge_sort(items[mid:])
+    def handleChoice (self, choice):
+        if choice == 0:
+            self.insert(self.compare_index + 1)
+        else:
+            if self.compare_index > 0:
+                self.compare_index -= 1
+                self.setupCompare()
+            else:
+                self.insert(0)
 
-#     # Merge sorted halves
-#     merged = merge(left, right)
-#     return merged
+    # Pop and insert element when something outranks it
+    def insert(self, position):
+        self.rankedList.pop(self.sorted_index)
+        self.rankedList.insert(position, self.current_item)
 
-# def merge(left, right):
-#     result = []
-#     i = j = 0
+        self.sorted_index += 1
+        self.updateOutputDisplay()
 
-#     # Comparison
-#     while i < len(left) and j < len(right):
-#         print(f"\n1: {left[i]} or 2: {right[j]}")
-#         choice = input("1 or 2: ").strip()
-#         if choice == '1':
-#             result.append(left[i])
-#             i += 1
-#         elif choice == '2':
-#             result.append(right[j])
-#             j += 1
-#         else:
-#             print("Invalid choice, try again.")
-
-#     # Append remaining elements from left and right
-#     result.extend(left[i:])
-#     result.extend(right[j:])
-#     return result
-
-# # Script running
-# if __name__ == "__main__":
-#     while True:
-#         input_list = [
-#             "Apple", "Orange", "Grape", "Banana", 
-#             "Pineapple", "Mango", "Pomegranate", "Watermelon"
-#         ]
-
-#         choice = input("(S)mall or (L)arge list?: ").strip().upper()
-#         if choice == 'S':
-#             rankedList = bubble_sort(input_list)
-#         elif choice == 'L':
-#             rankedList = merge_sort(input_list)
-        
-
-#         print("\nFinal Ranked List:")
-#         print("Ranked list: ", rankedList)
+        # Terminate the process once the last elements been ranked
+        if self.sorted_index >= len(self.rankedList):
+            self.optionOneButton.setText("Option 1")
+            self.optionOneButton.setEnabled(False)
+            self.optionTwoButton.setText("Option 2")
+            self.optionTwoButton.setEnabled(False)
+        else:
+            self.setupNextPass()
