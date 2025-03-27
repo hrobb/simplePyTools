@@ -1,7 +1,10 @@
 from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTextEdit, QPushButton, QHBoxLayout
 from PyQt6.QtCore import Qt
 
-# Potential future adds:
+# Potential future adds: 
+# Progress bar
+# L/R arrow keyboard shortcuts
+# Undo button?
 
 class ListRanker(QWidget):
     def __init__(self):
