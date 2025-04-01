@@ -35,5 +35,10 @@ SCRIPT_REGISTRY = {
 		title="List Ranker",
 		description="Algorithmically rank items in a list into an ordered list",
 		path=SCRIPTS_DIR / "ranker.py"
+	),
+	"Pacer": ScriptInfo(
+		title="Pacer",
+		description="Tracks the pace for a set of actions from a start time to an end time",
+		path=SCRIPTS_DIR / "pacer.py"
 	)
 }

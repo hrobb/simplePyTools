@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, QTextEdit, QHBoxLayout, QPushButton
+from PyQt6.QtCore import Qt
 
 class Pacer(QWidget):
     def __init__(self):
@@ -7,13 +8,63 @@ class Pacer(QWidget):
         self.setWindowTitle("Pacer")
 
         # Input Section
+        input_group = QGroupBox("Input")
+        input_layout = QVBoxLayout()
+
+        row1 = QHBoxLayout()
+        self.startTimeLabel = QLabel("Start Time:")
+        self.startTime = QTimeEdit()
+        row1.addWidget(self.startTimeLabel)
+        row1.addWidget(self.startTime)
+
+        row2 = QHBoxLayout()
+        self.endTimeLabel = QLabel("End Time:")
+        self.endTime = QTimeEdit()
+        row2.addWidget(self.endTimeLabel)
+        row2.addWidget(self.endTime)
+
+        self.reps = QTextEdit()
+
+        input_layout.setSpacing(10)
+        input_layout.addLayout(row1)
+        input_layout.addLayout(row2)
+        input_layout.addWidget(self.reps)
+        input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        input_group.setLayout(input_layout)
 
         # Output Section
+        output_group = QGroupBox("Output")
+        output_layout = QVBoxLayout()
+
+        action_section = QWidget()
+        action_layout = QHBoxLayout()
+        self.checkButton = QPushButton("Check Progress", action_section)
+        #
+        self.addButton = QPushButton("Increment", action_section)
+        #
+        action_layout.addWidget(self.checkButton)
+        action_layout.addWidget(self.addButton)
+
+        self.outputBox = QTextEdit()
+        self.outputBox.setReadOnly(True)
+
+        output_layout.setSpacing(10)
+        output_layout.addWidget(action_section)
+        output_layout.addWidget(self.outputBox)
+        output_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        output_group.setLayout(output_layout)
 
         # Parent Layout
+        layout = QVBoxLayout()
+
+        layout.addWidget(input_group)
+        layout.addSpacing(10)
+        layout.addWidget(output_group)
+
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         # Apply Layout
-
+        self.setLayout(layout)
 
 
 
