@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, QTextEdit, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
 from PyQt6.QtCore import Qt
 
 class Pacer(QWidget):
@@ -14,21 +14,38 @@ class Pacer(QWidget):
         row1 = QHBoxLayout()
         self.startTimeLabel = QLabel("Start Time:")
         self.startTime = QTimeEdit()
+        row1.addStretch()
         row1.addWidget(self.startTimeLabel)
         row1.addWidget(self.startTime)
+        row1.addStretch()
 
         row2 = QHBoxLayout()
         self.endTimeLabel = QLabel("End Time:")
         self.endTime = QTimeEdit()
+        row2.addStretch()
         row2.addWidget(self.endTimeLabel)
         row2.addWidget(self.endTime)
+        row2.addStretch()
 
-        self.reps = QTextEdit()
+        row3 = QHBoxLayout()
+        self.repsLabel = QLabel("Number of Sets:")
+        self.reps = QLineEdit()
+        self.reps.setFixedWidth(100)
+        row3.addStretch()
+        row3.addWidget(self.repsLabel)
+        row3.addWidget(self.reps)
+        row3.addStretch()
+
+        self.beginButton = QPushButton("Begin")
+        self.beginButton.setFixedSize(200, 30)
+        self.beginButton.clicked.connect(lambda: self.holdingFunc(0))
 
         input_layout.setSpacing(10)
         input_layout.addLayout(row1)
         input_layout.addLayout(row2)
-        input_layout.addWidget(self.reps)
+        input_layout.addLayout(row3)
+        input_layout.addWidget(self.beginButton, alignment=Qt.AlignmentFlag.AlignCenter)
+        input_layout.addSpacing(10)
         input_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         input_group.setLayout(input_layout)
 
@@ -39,11 +56,16 @@ class Pacer(QWidget):
         action_section = QWidget()
         action_layout = QHBoxLayout()
         self.checkButton = QPushButton("Check Progress", action_section)
-        #
+        self.checkButton.setEnabled(False)
+        self.checkButton.setFixedSize(200, 50)
+        self.checkButton.clicked.connect(lambda: self.holdingFunc(1))
         self.addButton = QPushButton("Increment", action_section)
-        #
+        self.addButton.setEnabled(False)
+        self.addButton.setFixedSize(200, 50)
+        self.addButton.clicked.connect(lambda: self.holdingFunc(2))
         action_layout.addWidget(self.checkButton)
         action_layout.addWidget(self.addButton)
+        action_section.setLayout(action_layout)
 
         self.outputBox = QTextEdit()
         self.outputBox.setReadOnly(True)
@@ -66,7 +88,15 @@ class Pacer(QWidget):
         # Apply Layout
         self.setLayout(layout)
 
-
+    def holdingFunc(self, testFunc):
+        match testFunc:
+            case 0:
+                self.outputBox.setText("Begin button working")
+            case 1:
+                self.outputBox.setText("Check button working")
+            case 2:
+                self.outputBox.setText("Increment button working")
+        
 
 
 
