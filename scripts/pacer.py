@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIntValidator
+import datetime
 
 class Pacer(QWidget):
     def __init__(self):
@@ -7,38 +9,44 @@ class Pacer(QWidget):
 
         self.setWindowTitle("Pacer")
 
+        self.startTime = datetime.datetime.now()
+        self.endTime = datetime.datetime.now()
+        self.reps = 0
+        self.activeTotal = 0
+
         # Input Section
         input_group = QGroupBox("Input")
         input_layout = QVBoxLayout()
 
         row1 = QHBoxLayout()
         self.startTimeLabel = QLabel("Start Time:")
-        self.startTime = QTimeEdit()
+        self.startTimeHolder = QTimeEdit()
         row1.addStretch()
         row1.addWidget(self.startTimeLabel)
-        row1.addWidget(self.startTime)
+        row1.addWidget(self.startTimeHolder)
         row1.addStretch()
 
         row2 = QHBoxLayout()
         self.endTimeLabel = QLabel("End Time:")
-        self.endTime = QTimeEdit()
+        self.endTimeHolder = QTimeEdit()
         row2.addStretch()
         row2.addWidget(self.endTimeLabel)
-        row2.addWidget(self.endTime)
+        row2.addWidget(self.endTimeHolder)
         row2.addStretch()
 
         row3 = QHBoxLayout()
         self.repsLabel = QLabel("Number of Sets:")
-        self.reps = QLineEdit()
-        self.reps.setFixedWidth(100)
+        self.repsHolder = QLineEdit()
+        self.repsHolder.setValidator(QIntValidator())
+        self.repsHolder.setFixedWidth(100)
         row3.addStretch()
         row3.addWidget(self.repsLabel)
-        row3.addWidget(self.reps)
+        row3.addWidget(self.repsHolder)
         row3.addStretch()
 
         self.beginButton = QPushButton("Begin")
         self.beginButton.setFixedSize(200, 30)
-        self.beginButton.clicked.connect(lambda: self.holdingFunc(0))
+        self.beginButton.clicked.connect(self.startPacer)
 
         input_layout.setSpacing(10)
         input_layout.addLayout(row1)
@@ -58,11 +66,11 @@ class Pacer(QWidget):
         self.checkButton = QPushButton("Check Progress", action_section)
         self.checkButton.setEnabled(False)
         self.checkButton.setFixedSize(200, 50)
-        self.checkButton.clicked.connect(lambda: self.holdingFunc(1))
+        self.checkButton.clicked.connect(self.checkPace)
         self.addButton = QPushButton("Increment", action_section)
         self.addButton.setEnabled(False)
         self.addButton.setFixedSize(200, 50)
-        self.addButton.clicked.connect(lambda: self.holdingFunc(2))
+        self.addButton.clicked.connect(self.incrementActive)
         action_layout.addWidget(self.checkButton)
         action_layout.addWidget(self.addButton)
         action_section.setLayout(action_layout)
@@ -90,13 +98,50 @@ class Pacer(QWidget):
 
     def holdingFunc(self, testFunc):
         match testFunc:
-            case 0:
-                self.outputBox.setText("Begin button working")
             case 1:
                 self.outputBox.setText("Check button working")
             case 2:
                 self.outputBox.setText("Increment button working")
         
+    def startPacer(self):
+        if not self.repsHolder.text():
+            self.outputBox.setText("Please enter number of sets.")
+            return
+
+        self.startTime = self.startTimeHolder.time()
+        self.endTime = self.endTimeHolder.time()
+        self.reps = int(self.repsHolder.text())
+        self.totalTime = self.startTime.secsTo(self.endTime)
+        self.calcPace = self.totalTime/self.reps
+
+        if (self.startTime < self.endTime) and self.reps > 0:
+            self.beginButton.setEnabled(False)
+            self.checkButton.setEnabled(True)
+            self.addButton.setEnabled(True)
+            self.activeTotal = 0
+            
+        else:
+            self.outputBox.setText("Please ensure:\n"
+            "- End Time is after Start Time\n"
+            "- Number of sets is above 0")
+
+    def updateDisplay(self):
+        # Function to handle endgame case as well as updating the display anytime action is taken
+        return
+
+    def checkPace(self):
+        currentTime = datetime.datetime.now().time()
+        currentSecs = (currentTime.hour * 3600) + (currentTime.minute * 60) + currentTime.second
+        startSecs = (self.startTime.hour() * 3600) + (self.startTime.minute() * 60) + self.startTime.second()
+
+        if startSecs + (self.activeTotal * self.calcPace) > currentSecs:
+            self.outputBox.setText("On Pace")
+        else:
+            self.outputBox.setText("Falling Behind")
+
+    def incrementActive(self):
+        self.activeTotal += 1
+
 
 
 
