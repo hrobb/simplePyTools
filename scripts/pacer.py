@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator
 import datetime
+import time
 
 class Pacer(QWidget):
     def __init__(self):
@@ -11,6 +12,7 @@ class Pacer(QWidget):
 
         self.startTime = datetime.datetime.now()
         self.endTime = datetime.datetime.now()
+        self.currentTime = datetime.datetime.now().time()
         self.reps = 0
         self.activeTotal = 0
 
@@ -66,7 +68,7 @@ class Pacer(QWidget):
         self.checkButton = QPushButton("Check Progress", action_section)
         self.checkButton.setEnabled(False)
         self.checkButton.setFixedSize(200, 50)
-        self.checkButton.clicked.connect(self.checkPace)
+        self.checkButton.clicked.connect(self.updateDisplay)
         self.addButton = QPushButton("Increment", action_section)
         self.addButton.setEnabled(False)
         self.addButton.setFixedSize(200, 50)
@@ -119,6 +121,8 @@ class Pacer(QWidget):
             self.checkButton.setEnabled(True)
             self.addButton.setEnabled(True)
             self.activeTotal = 0
+
+            self.updateDisplay()
             
         else:
             self.outputBox.setText("Please ensure:\n"
@@ -127,20 +131,40 @@ class Pacer(QWidget):
 
     def updateDisplay(self):
         # Function to handle endgame case as well as updating the display anytime action is taken
-        return
 
-    def checkPace(self):
-        currentTime = datetime.datetime.now().time()
-        currentSecs = (currentTime.hour * 3600) + (currentTime.minute * 60) + currentTime.second
+        # Variable calculations
+        self.currentTime = datetime.datetime.now().time()
+        currentSecs = (self.currentTime.hour * 3600) + (self.currentTime.minute * 60) + self.currentTime.second
         startSecs = (self.startTime.hour() * 3600) + (self.startTime.minute() * 60) + self.startTime.second()
+        onPaceFlag = ""
 
-        if startSecs + (self.activeTotal * self.calcPace) > currentSecs:
-            self.outputBox.setText("On Pace")
+        # Calc Average Pace
+        avgPace = f"{int(self.calcPace / 3600):02d}:{int((self.calcPace % 3600) / 60):02d}"
+
+        # Calc Current Pace
+        if self.activeTotal == 0:
+            currentPace = "NULL"
         else:
-            self.outputBox.setText("Falling Behind")
+            currentPaceSecs = int((currentSecs - startSecs) / self.activeTotal)
+            currentPace = f"{int(currentPaceSecs / 3600):02d}:{int((currentPaceSecs % 3600) / 60):02d}"
+
+        # On Pace Flag
+        if startSecs + (self.activeTotal * self.calcPace) > currentSecs:
+            onPaceFlag = "On Pace"
+        else:
+            onPaceFlag = "Falling Behind"
+
+        # Update display
+        self.outputBox.setText(self.startTime.toString("HH:mm") + " -> " + self.endTime.toString("HH:mm") + "\n\n" +
+        "Average Pace needed: " + avgPace + "\n" +
+        "Your Pace: " + currentPace + "\n" +
+        "Current Progress: " + onPaceFlag + " (" + str(self.activeTotal) + "/" + str(self.reps) + ")\n\n" +
+        "Last Updated: " + str(time.strftime("%H:%M:%S"))) 
+       
 
     def incrementActive(self):
         self.activeTotal += 1
+        self.updateDisplay()
 
 
 
