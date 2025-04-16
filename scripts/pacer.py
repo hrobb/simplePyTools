@@ -4,6 +4,8 @@ from PyQt6.QtGui import QIntValidator
 import datetime
 import time
 
+# Potential future adds:
+
 class Pacer(QWidget):
     def __init__(self):
         super().__init__()
@@ -130,13 +132,12 @@ class Pacer(QWidget):
             "- Number of sets is above 0")
 
     def updateDisplay(self):
-        # Function to handle endgame case as well as updating the display anytime action is taken
-
         # Variable calculations
         self.currentTime = datetime.datetime.now().time()
         currentSecs = (self.currentTime.hour * 3600) + (self.currentTime.minute * 60) + self.currentTime.second
         startSecs = (self.startTime.hour() * 3600) + (self.startTime.minute() * 60) + self.startTime.second()
         onPaceFlag = ""
+        finishedFlag = "Last Updated: "
 
         # Calc Average Pace
         avgPace = f"{int(self.calcPace / 3600):02d}:{int((self.calcPace % 3600) / 60):02d}"
@@ -149,7 +150,10 @@ class Pacer(QWidget):
             currentPace = f"{int(currentPaceSecs / 3600):02d}:{int((currentPaceSecs % 3600) / 60):02d}"
 
         # On Pace Flag
-        if startSecs + (self.activeTotal * self.calcPace) > currentSecs:
+        if (self.activeTotal == self.reps):
+            onPaceFlag = "Congrats! You finished."
+            finishedFlag = "Completed At: "
+        elif (startSecs + (self.activeTotal * self.calcPace)) > currentSecs:
             onPaceFlag = "On Pace"
         else:
             onPaceFlag = "Falling Behind"
@@ -159,57 +163,14 @@ class Pacer(QWidget):
         "Average Pace needed: " + avgPace + "\n" +
         "Your Pace: " + currentPace + "\n" +
         "Current Progress: " + onPaceFlag + " (" + str(self.activeTotal) + "/" + str(self.reps) + ")\n\n" +
-        "Last Updated: " + str(time.strftime("%H:%M:%S"))) 
+        finishedFlag + str(time.strftime("%H:%M:%S"))) 
        
 
     def incrementActive(self):
         self.activeTotal += 1
         self.updateDisplay()
-
-
-
-
-# import datetime
-
-# exitFlag = 0
-
-# startTime = datetime.datetime.now()
-# endTime = datetime.datetime.now()
-# startTimeVal = input("What time are you starting?    ")
-# endTimeVal = input("What time do you want to finish up?    ")
-
-# startTime = startTime.replace(hour=int(startTimeVal), minute=0, second=0, microsecond=0)
-# endTime = endTime.replace(hour=int(endTimeVal), minute=0, second=0, microsecond=0)
-# totalTime = endTime-startTime
-
-# desiredTotal = 0
-# activeTotal = 0
-# desiredTotal = int(input("How many sets are you doing?    "))
-# calcPace = totalTime/desiredTotal
-
-# def calcRemainingTime(endTime):
-#     currTime = datetime.datetime.now()
-#     currTime = currTime.replace(microsecond=0)
-#     final = endTime-currTime
-#     return final
-
-# def onPace():
-#     if (startTime+(activeTotal*calcPace) > datetime.datetime.now()):
-#         return "You are on pace"
-#     else:
-#         return "You're falling behind"
-
-# while (exitFlag != 1): 
-#     inVal = input("\nCheck, Add, Exit:    ")
-
-#     if inVal == "Check":
-#         if (activeTotal >= desiredTotal):
-#             print("Congrats, you're done for the day!")
-#         else:
-#             print("You have completed " + str(activeTotal) + " out of " + str(desiredTotal) + " sets.")
-#             print("You have " + str(calcRemainingTime(endTime)) + " remaining.")
-#             print(onPace())
-#     elif inVal == "Add":
-#         activeTotal+=1
-#     elif inVal == "Exit":
-#         exitFlag = 1
+        
+        if (self.activeTotal == self.reps):
+            self.beginButton.setEnabled(True)
+            self.checkButton.setEnabled(False)
+            self.addButton.setEnabled(False)
