@@ -1,10 +1,12 @@
 from PyQt6.QtWidgets import QWidget, QGroupBox, QVBoxLayout, QLabel, QTimeEdit, QTextEdit, QHBoxLayout, QPushButton, QLineEdit
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtGui import QIntValidator
 import datetime
 import time
 
-# Potential future adds:
+# Potential future adds: 
+# Keyboard shortcuts?
+# Progress bar?
 
 class Pacer(QWidget):
     def __init__(self):
@@ -14,7 +16,6 @@ class Pacer(QWidget):
 
         self.startTime = datetime.datetime.now()
         self.endTime = datetime.datetime.now()
-        self.currentTime = datetime.datetime.now().time()
         self.reps = 0
         self.activeTotal = 0
 
@@ -25,6 +26,7 @@ class Pacer(QWidget):
         row1 = QHBoxLayout()
         self.startTimeLabel = QLabel("Start Time:")
         self.startTimeHolder = QTimeEdit()
+        self.startTimeHolder.setTime(QTime.currentTime())
         row1.addStretch()
         row1.addWidget(self.startTimeLabel)
         row1.addWidget(self.startTimeHolder)
@@ -33,6 +35,7 @@ class Pacer(QWidget):
         row2 = QHBoxLayout()
         self.endTimeLabel = QLabel("End Time:")
         self.endTimeHolder = QTimeEdit()
+        self.endTimeHolder.setTime(QTime.currentTime().addSecs(3600))
         row2.addStretch()
         row2.addWidget(self.endTimeLabel)
         row2.addWidget(self.endTimeHolder)
@@ -100,12 +103,13 @@ class Pacer(QWidget):
         # Apply Layout
         self.setLayout(layout)
 
-    def holdingFunc(self, testFunc):
-        match testFunc:
-            case 1:
-                self.outputBox.setText("Check button working")
-            case 2:
-                self.outputBox.setText("Increment button working")
+    def formatTime(self, seconds):
+        hours = int(seconds / 3600)
+        mins = int((seconds % 3600) / 60)
+        return f"{hours:02d}:{mins:02d}"
+    
+    def getSeconds(self, qTime):
+        return (qTime.hour() * 3600) + (qTime.minute() * 60) + qTime.second()
         
     def startPacer(self):
         if not self.repsHolder.text():
@@ -127,27 +131,29 @@ class Pacer(QWidget):
             self.updateDisplay()
             
         else:
-            self.outputBox.setText("Please ensure:\n"
-            "- End Time is after Start Time\n"
-            "- Number of sets is above 0")
+            self.outputBox.setText(
+                f"Please ensure:\n"
+                f"- End Time is after Start Time\n"
+                f"- Number of sets is above 0"
+            )
 
     def updateDisplay(self):
         # Variable calculations
-        self.currentTime = datetime.datetime.now().time()
-        currentSecs = (self.currentTime.hour * 3600) + (self.currentTime.minute * 60) + self.currentTime.second
-        startSecs = (self.startTime.hour() * 3600) + (self.startTime.minute() * 60) + self.startTime.second()
+        currentTime = QTime.currentTime()
+        currentSecs = self.getSeconds(currentTime)
+        startSecs = self.getSeconds(self.startTime)
         onPaceFlag = ""
         finishedFlag = "Last Updated: "
 
         # Calc Average Pace
-        avgPace = f"{int(self.calcPace / 3600):02d}:{int((self.calcPace % 3600) / 60):02d}"
+        avgPace = self.formatTime(self.calcPace)
 
         # Calc Current Pace
         if self.activeTotal == 0:
             currentPace = "NULL"
         else:
             currentPaceSecs = int((currentSecs - startSecs) / self.activeTotal)
-            currentPace = f"{int(currentPaceSecs / 3600):02d}:{int((currentPaceSecs % 3600) / 60):02d}"
+            currentPace = self.formatTime(currentPaceSecs)
 
         # On Pace Flag
         if (self.activeTotal == self.reps):
@@ -159,11 +165,13 @@ class Pacer(QWidget):
             onPaceFlag = "Falling Behind"
 
         # Update display
-        self.outputBox.setText(self.startTime.toString("HH:mm") + " -> " + self.endTime.toString("HH:mm") + "\n\n" +
-        "Average Pace needed: " + avgPace + "\n" +
-        "Your Pace: " + currentPace + "\n" +
-        "Current Progress: " + onPaceFlag + " (" + str(self.activeTotal) + "/" + str(self.reps) + ")\n\n" +
-        finishedFlag + str(time.strftime("%H:%M:%S"))) 
+        self.outputBox.setText(
+            f"{self.startTime.toString("HH:mm")} -> {self.endTime.toString("HH:mm")}\n\n"
+            f"Average Pace needed: {avgPace}\n"
+            f"Your Pace: {currentPace}\n"
+            f"Current Progress: {onPaceFlag} ({self.activeTotal}/{self.reps})\n\n"
+            f"{finishedFlag}{time.strftime("%H:%M:%S")}"
+        )
        
 
     def incrementActive(self):
